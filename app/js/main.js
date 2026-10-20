@@ -129,7 +129,22 @@ function gardenView() {
       <button type="button" data-act="view" data-v="list" ${pressed(mode, 'list')}>${icon('list')}<span>List</span></button>
     </div>
   </div>
-  ${mode === 'list' ? listView() : bedsView()}`;
+  ${mode === 'list' ? listView() : `<div class="garden-wrap"><div class="garden-main">${bedsView()}</div>${notebook()}</div>`}`;
+}
+
+const wideMQ = matchMedia('(min-width: 1200px)');
+
+// A watering list, pinned beside the garden when there's room for it.
+function notebook() {
+  const due = L.dueFriends(state.friends, today);
+  const bd = L.upcomingBirthdays(state.friends, today, 14);
+  const when = (b) => (b.inDays === 0 ? 'today' : b.inDays === 1 ? 'tomorrow' : b.inDays < 7 ? L.weekdayName(b.date) : L.longDate(b.date, false));
+  return `<aside class="notebook" aria-labelledby="nb-h">
+    <h2 id="nb-h">Watering list</h2>
+    ${due.length ? `<ul role="list">${due.slice(0, 7).map((f) => `<li><a href="${friendHref(f)}">${icon('drop')}${esc(f.name)}</a><small>${L.ago(L.daysSince(f, today)).replace(' ago', '')}</small></li>`).join('')}</ul>
+      ${due.length > 7 ? `<button class="link" type="button" data-act="see-thirsty">and ${due.length - 7} more</button>` : ''}` : "<p>Everyone's watered.</p>"}
+    ${bd.length ? `<h3>Birthdays soon</h3><ul role="list">${bd.slice(0, 4).map((b) => `<li><a href="${friendHref(b.friend)}">${icon('cake')}${esc(b.friend.name)}</a><small>${when(b)}</small></li>`).join('')}</ul>` : ''}
+  </aside>`;
 }
 
 function beds() {
@@ -161,7 +176,7 @@ function seedCell(b) {
 // Planters are as long as their plants need, up to the width of the page.
 function gardenLayout() {
   const narrow = window.innerWidth <= 760;
-  const inner = Math.min(window.innerWidth, 1200) - (narrow ? 32 : 48);
+  const inner = Math.min(window.innerWidth, 1200) - (narrow ? 32 : 48) - (wideMQ.matches ? 330 : 0);
   const cell = narrow ? Math.floor((inner - 8) / 3) : window.innerWidth < 1000 ? 140 : 158;
   const max = Math.max(3, Math.floor((inner - 20) / cell));
   return { cell, max, key: `${cell}x${max}` };
@@ -210,6 +225,7 @@ function emptyGarden() {
       <button class="btn" type="button" data-act="sample-load">${icon('garden')}Try it with a sample garden</button>
     </div>
     <p class="small muted">Everything stays in this browser, on this device.</p>
+    <div class="empty-planter" aria-hidden="true"><div class="planter">${['fern', 'sunflower', 'tulip'].map((k) => `<div class="cell">${plantSVG({ kind: k, stage: 0, seed: `empty-${k}`, dusk: dusk(), crop: true })}</div>`).join('')}</div></div>
   </section>`;
 }
 
@@ -309,7 +325,7 @@ function friendView(fr) {
       <dl class="facts">
         <div><dt>Keep in touch</dt><dd>${L.rhythmOf(fr.rhythm).label}</dd></div>
         <div><dt>Birthday</dt><dd>${bdText ? esc(bdText) : '<span class="muted">Not added</span>'}</dd></div>
-        <div><dt>Growing</dt><dd>${L.STAGE_WORDS[st]}${n ? `, in touch on ${plural(n, 'one day', '# days')}` : ''}</dd></div>
+        <div><dt>Growing</dt><dd>${L.STAGE_WORDS[st]}${n ? `, ${plural(n, 'one day', '# days')} of hellos` : ''}</dd></div>
       </dl>
     </div>
   </article>
@@ -453,7 +469,7 @@ function saveFriend(form) {
     toast('Saved.');
     go(friendHref(fr));
   } else {
-    const fr = { id: L.uid(), name: v.name, rhythm: v.rhythm, plant: v.plant || L.pickKind(state.friends), birthday: v.birthday, group: v.group, note: v.note, added: today, sample: false, touches: [] };
+    const fr = { id: L.uid(), name: v.name, rhythm: v.rhythm, plant: v.plant || L.pickKind(state.friends), birthday: v.birthday, group: v.group, note: v.note, added: today, sample: false, grown: 0, touches: [] };
     state.friends.push(fr);
     commit();
     ui.justPlanted = fr.id;
@@ -491,7 +507,7 @@ function settingsView() {
 
     <section class="card" aria-labelledby="s-data">
       <h2 id="s-data">Your garden's data</h2>
-      <p>Your garden lives only in this browser, on this device. Nothing is sent anywhere, and there's no account. Clearing your browser's data clears your garden too, so download a backup now and then.</p>
+      <p>Your garden lives only in this browser, on this device. Nothing you put in it is sent anywhere, and there's no account. Clearing your browser's data clears your garden too, so download a backup now and then.</p>
       <div class="actions">
         <button class="btn" type="button" data-act="export">${icon('download')}Download a backup</button>
         <button class="btn" type="button" data-act="import">${icon('upload')}Restore a backup</button>
@@ -526,7 +542,7 @@ function settingsView() {
 
     <section class="card" aria-labelledby="s-about">
       <h2 id="s-about">About</h2>
-      <p>Friend Garden is a small, free app for keeping in touch. It has no account, no ads and no tracking, and it works offline once it's open.</p>
+      <p>Friend Garden is a small, free app for keeping in touch. It has no account and no ads, what you put in it never leaves your device, and once it has loaded it works without the internet.</p>
       <p class="links"><a href="https://docs.tiresia.xyz/friend-garden/" target="_blank" rel="noopener">How it works</a> · <a href="https://github.com/franz-rosenzweig/friend-garden" target="_blank" rel="noopener">Source code</a> · MIT license</p>
     </section>
 
@@ -618,8 +634,9 @@ function talk(fr) {
       if (!L.isDay(date) || date > today) date = today;
       const before = L.stage(fr);
       fr.touches.push({ id: L.uid(), date, how: String(d.get('how') || 'call'), note: String(d.get('note') || '').trim().slice(0, 500), t: Date.now() });
+      fr.grown = L.stage(fr);
       commit();
-      logged = { grew: L.stage(fr) > before };
+      logged = { grew: fr.grown > before };
       openSheet(askStep(fr, 'Anything to ask about next time?'), 'ask-title');
       bindAsk(fr, () => closeSheet(logged));
     });
@@ -667,7 +684,10 @@ async function water(fr, grew) {
   const host = view.querySelector(`[data-plant="${CSS.escape(fr.id)}"]`);
   if (host && !reduced()) {
     host.classList.add('is-watering');
-    host.insertAdjacentHTML('beforeend', wateringCan());
+    const art = host.querySelector('.plant-art') || host;
+    const r = art.getBoundingClientRect();
+    art.style.setProperty('--fall', `${Math.max(24, Math.round(0.71 * r.width - 0.12 * r.height))}px`);
+    art.insertAdjacentHTML('beforeend', wateringCan());
     await wait(2000);
   }
   render(false);
@@ -889,6 +909,10 @@ function start() {
   });
   render(false);
   document.documentElement.classList.add('ready');
+  // Works offline once it has loaded (https only; the tests switch it off with ?nosw).
+  if ('serviceWorker' in navigator && location.protocol === 'https:' && !location.search.includes('nosw')) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
 }
 
 // For the tests in tools/: read the state and draw again.

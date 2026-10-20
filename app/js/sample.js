@@ -49,7 +49,7 @@ export function sampleFriends(today) {
     const oldest = touches.length ? touches[touches.length - 1].date : addDays(today, -(p.added || 0));
     return {
       id: `sample-${i + 1}`, name: p.name, rhythm: p.rhythm, plant: p.plant, birthday, group: p.group,
-      note: p.note, added: p.added != null ? addDays(today, -p.added) : addDays(oldest, -3), sample: true, touches,
+      note: p.note, added: p.added != null ? addDays(today, -p.added) : addDays(oldest, -3), sample: true, grown: 0, touches,
     };
   });
 }

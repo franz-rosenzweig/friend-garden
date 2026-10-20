@@ -57,6 +57,10 @@ test('mood: the newest touch counts, whatever order they were logged in', () => 
 test('stage: distinct days in touch', () => {
   eq([[], [1], [1, 2], [1, 2, 3], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]].map((d) => L.stage(friend({ days: d }))), [0, 1, 1, 2, 3, 4]);
   eq(L.stage(friend({ days: [1, 1, 1, 1, 1] })), 1, 'same day counts once');
+  const f = friend({ days: [1, 2, 3, 4, 5, 6] });
+  f.grown = L.stage(f);
+  f.touches.splice(0, 4);
+  eq(L.stage(f), 3, 'never shrinks when a hello is removed');
 });
 test('dew after a recent watering', () => {
   eq([0, 1, 2].map((d) => L.dewy(friend({ days: [d] }), T)), [true, true, false]);
@@ -137,7 +141,7 @@ test('normalize cleans up', () => {
   eq(s.groups, [{ id: 'g1', name: 'Pals' }]);
   eq(s.friends.length, 2);
   const [a, b] = s.friends;
-  eq([a.name, a.rhythm, a.plant, a.group, a.birthday], ['Ann', 'month', 'fern', '', '']);
+  eq([a.name, a.rhythm, a.plant, a.group, a.birthday, a.grown], ['Ann', 'month', 'fern', '', '', 0]);
   eq(a.touches.length, 1, 'bad and future dates dropped');
   eq(a.touches[0].how, 'call');
   ok(b.id !== 'a', 'duplicate id replaced');

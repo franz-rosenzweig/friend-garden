@@ -350,11 +350,39 @@ button { font: inherit; color: inherit; }
 .seed-spot:hover .spot .ico { background: var(--paper); color: var(--ink); }
 .seed-spot .tag { background: transparent; box-shadow: none; transform: none; color: var(--wood-ink); }
 
+/* The watering list, pinned beside the garden on wide screens. */
+.garden-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 30px; align-items: start; }
+.notebook {
+  position: sticky; top: 18px; margin-top: 44px; padding: 26px 20px 20px 50px; border-radius: 4px 4px 10px 4px;
+  color: var(--tag-ink); transform: rotate(1.2deg); box-shadow: 0 2px 0 rgba(0, 0, 0, .06), 0 14px 28px rgba(40, 30, 10, .2);
+  background:
+    linear-gradient(90deg, transparent 36px, rgba(214, 96, 84, .45) 36px 38px, transparent 38px),
+    repeating-linear-gradient(180deg, transparent 0 33px, rgba(90, 140, 190, .28) 33px 34px),
+    var(--tag);
+  background-position: 0 0, 0 14px, 0 0;
+}
+.notebook::before { content: ""; position: absolute; top: -12px; left: 50%; width: 92px; height: 26px; margin-left: -46px; background: rgba(150, 190, 120, .55); transform: rotate(-3deg); }
+.notebook h2 { margin: 0 0 6px; font: 700 30px/1.1 Caveat, cursive; letter-spacing: 0; }
+.notebook h3 { margin: 18px 0 4px; font: 700 24px/1.1 Caveat, cursive; letter-spacing: 0; }
+.notebook ul { list-style: none; margin: 0; padding: 0; }
+.notebook li { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 34px; }
+.notebook li a { display: inline-flex; align-items: center; gap: 6px; min-width: 0; min-height: 34px; color: var(--tag-ink); font: 700 22px/1 Caveat, cursive; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.notebook li a .ico { flex: none; }
+.notebook li a:hover { text-decoration: underline; }
+.notebook li a .ico { width: 15px; height: 15px; stroke: #3f7fae; stroke-width: 2.2; }
+.notebook small { color: var(--tag-ink-2); font-size: 13px; white-space: nowrap; }
+.notebook p { margin: 4px 0 0; font: 700 22px/1.4 Caveat, cursive; }
+.notebook .link { min-height: 34px; color: var(--tag-ink); font: 700 21px/1 Caveat, cursive; }
+@media (max-width: 1199px) {
+  .garden-wrap { display: block; }
+  .notebook { display: none; }
+}
+
 /* The list view, for screen readers and quick scanning. */
 .friend-list { list-style: none; margin: 20px 0 0; padding: 8px; }
 .friend-list li + li { border-top: 1px solid var(--line); }
 .friend-list .row {
-  display: grid; grid-template-columns: 60px minmax(0, 1.2fr) minmax(0, 1.6fr) auto; gap: 16px; align-items: center;
+  display: grid; grid-template-columns: 60px minmax(0, 320px) minmax(0, 1fr) 150px; gap: 16px; align-items: center;
   min-height: 76px; padding: 4px 12px; border-radius: 14px; color: inherit; text-decoration: none;
 }
 .friend-list .row:hover { background: var(--paper-2); }
@@ -362,6 +390,7 @@ button { font: inherit; color: inherit; }
 .who strong { display: block; font-size: 17px; }
 .who small, .when { color: var(--ink-2); font-size: 15px; }
 
+.friend-list .mood-chip { justify-self: end; }
 .mood-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 11px 3px 8px; border-radius: 999px; font-weight: 800; font-size: 14px; white-space: nowrap; }
 .mood-chip .ico { width: 15px; height: 15px; stroke-width: 2.2; }
 .mood-chip.mood-fresh { background: var(--fresh-bg); color: var(--fresh-ink); }
@@ -376,6 +405,10 @@ button { font: inherit; color: inherit; }
 .empty .lede { margin: 0 auto 22px; }
 .empty .actions { justify-content: center; }
 .empty .small { margin-top: 18px; }
+.empty-planter { display: flex; justify-content: center; margin-top: 34px; }
+.empty-planter .planter { --c: 3; --cell: 132px; --plank: 34px; padding-bottom: 40px; }
+.empty-planter .cell { height: 92px; }
+.empty-planter svg { width: 100%; height: auto; overflow: visible; }
 
 /* ---------------------------------------------------------------- today */
 
@@ -385,8 +418,8 @@ button { font: inherit; color: inherit; }
 .today-grid .week { grid-area: week; }
 .today-empty { margin-top: 30px; max-width: 640px; }
 .calm { color: var(--ink-2); margin: 0 0 10px; font-size: 17px; }
-.suggest-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
-.suggest { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 14px; align-items: start; padding: 14px 16px 16px 8px; border-radius: 18px; background: var(--paper-2); }
+.suggest-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.suggest { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 18px; align-items: center; padding: 14px 18px 16px 10px; border-radius: 18px; background: var(--paper-2); }
 .s-plant { display: flex; align-items: flex-end; position: relative; min-height: 150px; --fall: 90px; }
 .s-plant .plant-art svg { overflow: visible; }
 .s-body h3 { margin: 4px 0 2px; font-size: 24px; line-height: 1.15; }
@@ -407,9 +440,10 @@ button { font: inherit; color: inherit; }
 .bday-who a { font-weight: 800; }
 .bday-ico { width: 26px; height: 26px; color: var(--accent); }
 .mini-garden { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.mini-garden a { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 112px; height: 100%; text-decoration: none; }
+.mini-garden a { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 118px; height: 100%; text-decoration: none; }
 .mini-garden .plant-art svg { overflow: visible; }
-.mini-garden .tag { font-size: 18px; margin-top: -10px; }
+.mini-garden .tag { font-size: 18px; margin-top: -6px; }
+.mini-garden li { display: flex; }
 
 /* ---------------------------------------------------------------- one friend */
 
@@ -482,7 +516,7 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 .settings-grid .card .actions + p { margin: 12px 0 0; }
 .group-list { list-style: none; margin: 0 0 10px; padding: 0; }
 .group-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto 42px 42px 42px; gap: 4px; align-items: center; padding: 4px 0; }
-.g-count { color: var(--ink-2); font-size: 14px; padding: 0 6px; white-space: nowrap; }
+.g-count { width: 76px; color: var(--ink-2); font-size: 14px; padding: 0 4px; text-align: right; white-space: nowrap; }
 .group-add { display: flex; gap: 8px; }
 .group-add input { flex: 1; }
 .links a { font-weight: 700; }
@@ -515,7 +549,7 @@ dialog::backdrop { background: rgba(28, 33, 22, .5); }
 /* ---------------------------------------------------------------- toast */
 
 .toast {
-  position: fixed; left: 50%; bottom: 28px; z-index: 60; max-width: calc(100vw - 32px); padding: 12px 18px;
+  position: fixed; left: 50%; bottom: 28px; z-index: 60; width: max-content; max-width: min(560px, calc(100vw - 32px)); padding: 12px 18px;
   border-radius: 14px; background: var(--ink); color: var(--paper); font-weight: 700; box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
   opacity: 0; transform: translate(-50%, 16px); transition: opacity .25s, transform .25s; pointer-events: none;
 }
@@ -523,9 +557,9 @@ dialog::backdrop { background: rgba(28, 33, 22, .5); }
 
 /* ---------------------------------------------------------------- watering and growing */
 
-.watering { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
-.watering .can { position: absolute; right: -6%; top: -4%; width: 62%; transform-origin: 40% 70%; animation: can 2s ease-in-out both; filter: drop-shadow(0 4px 6px rgba(20, 30, 40, .25)); }
-.watering .drops { position: absolute; left: 36%; top: 27%; width: 24px; height: 10px; }
+.watering { position: absolute; left: 0; right: 0; bottom: 0; aspect-ratio: 1; z-index: 5; pointer-events: none; }
+.watering .can { position: absolute; right: -6%; top: -4%; width: 62%; transform-origin: 58% 68%; animation: can 2s ease-in-out both; filter: drop-shadow(0 4px 6px rgba(20, 30, 40, .25)); }
+.watering .drops { position: absolute; left: 40%; top: 29%; width: 24px; height: 10px; }
 .watering .drops i {
   position: absolute; top: 0; left: calc(50% + var(--dx)); width: 5px; height: 8px; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
   background: var(--water); opacity: 0; animation: drop .62s ease-in calc(.62s + var(--dd)) 2;
@@ -533,7 +567,7 @@ dialog::backdrop { background: rgba(28, 33, 22, .5); }
 @keyframes can {
   0% { opacity: 0; transform: translate(26%, -26%) rotate(8deg); }
   18% { opacity: 1; transform: none; }
-  32%, 74% { opacity: 1; transform: rotate(-30deg); }
+  32%, 74% { opacity: 1; transform: rotate(-40deg); }
   90% { opacity: 1; transform: none; }
   100% { opacity: 0; transform: translate(18%, -18%); }
 }
@@ -557,6 +591,8 @@ dialog::backdrop { background: rgba(28, 33, 22, .5); }
 
 @media (max-width: 760px) {
   :root { --sky-h: 240px; }
+  .sun { top: 50px; right: 3%; width: 84px; height: 84px; }
+  .moon { top: 58px; right: 6%; width: 38px; }
   .top { padding: 12px 16px 0; }
   .brand { font-size: 22px; }
   .brand .mark { width: 36px; height: 36px; }
@@ -589,7 +625,10 @@ dialog::backdrop { background: rgba(28, 33, 22, .5); }
   .friend-list .thumb { grid-row: span 3; }
   .thumb svg { width: 52px; height: 65px; }
   .friend-list .when { font-size: 14px; }
+  .t-head .muted { display: block; margin-left: 0; }
+  .t-head time { margin-left: 2px; }
   .friend-list .mood-chip { justify-self: start; }
+  .empty-planter .planter { --cell: 100px; }
   .today-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hello" "bdays" "week"; margin-top: 20px; gap: 16px; }
   .suggest-grid { grid-template-columns: minmax(0, 1fr); }
   .suggest { grid-template-columns: 104px minmax(0, 1fr); gap: 8px; padding: 12px 12px 14px 4px; }

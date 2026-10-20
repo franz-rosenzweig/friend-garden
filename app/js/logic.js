@@ -93,12 +93,13 @@ export function mood(fr, today) {
   return t < 1 ? 'fresh' : t < 2 ? 'thirsty' : 'droopy';
 }
 
-// Growth counts the different days you were in touch, and never goes back.
+// Growth counts the different days you were in touch. It never goes back:
+// `grown` remembers the biggest it has been, even if a hello is removed later.
 export function stage(fr) {
   const days = new Set((fr.touches || []).map((t) => t.date)).size;
   let s = 0;
   while (s < STAGE_AT.length && days >= STAGE_AT[s]) s++;
-  return s;
+  return Math.max(s, Math.min(4, fr.grown | 0));
 }
 export const daysInTouch = (fr) => new Set((fr.touches || []).map((t) => t.date)).size;
 

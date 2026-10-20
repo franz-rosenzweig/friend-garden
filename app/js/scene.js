@@ -71,13 +71,14 @@ export function wateringCan() {
   let drops = '';
   for (let i = 0; i < 9; i++) drops += `<i style="--dx:${(i % 3) * 7 - 7}px;--dd:${(i * 0.13).toFixed(2)}s"></i>`;
   return `<div class="watering" aria-hidden="true">
-    <svg class="can" viewBox="0 0 120 90">
+    <svg class="can" viewBox="0 0 120 90"><g transform="translate(120 0) scale(-1 1)">
       <path d="M22 34h50l-5 44a6 6 0 0 1-6 5H33a6 6 0 0 1-6-5z" fill="#6aa3b8"/>
       <path d="M22 34h50l-1 8H23z" fill="#5a8fa3"/>
       <path d="M30 40l3 38" stroke="#9cc6d4" stroke-width="4" stroke-linecap="round" opacity=".8"/>
       <path d="M70 46l34-26" stroke="#6aa3b8" stroke-width="7" stroke-linecap="round"/>
       <path d="M98 14l14 16-6 3-12-14z" fill="#5a8fa3"/>
       <path d="M30 34c0-20 34-20 34 0" fill="none" stroke="#5a8fa3" stroke-width="6" stroke-linecap="round"/>
+    </g>
     </svg>
     <div class="drops">${drops}</div>
   </div>`;

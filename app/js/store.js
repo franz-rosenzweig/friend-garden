@@ -60,6 +60,7 @@ export function normalize(raw, today = todayISO()) {
         note: str(f.note),
         added: isDay(f.added) && f.added <= today ? f.added : today,
         sample: f.sample === true,
+        grown: Number.isInteger(f.grown) && f.grown > 0 ? Math.min(4, f.grown) : 0,
         touches,
       });
     }
