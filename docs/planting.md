@@ -23,7 +23,7 @@ the name, and everything else is optional or already has a sensible answer.
 ![The Add a friend form, with the plant picker and a birthday](images/add.png)
 *Adding a friend. Only the name is needed.*
 
-- **Name** is how they show up on their plant's tag. Something short reads best in the garden, like "Sam" or
+- **Name** is how they show up on their plant's tag. Something short reads best in the garden, like "Theo" or
   "Aunt Rosa", and the full name can go here too, it just gets cut off on the tag.
 - **How often would you like to be in touch?** is the rhythm: **Every week**, **Every 2 weeks**, **Every month**
   (the default), **Every 3 months** or **Whenever**. This is what decides when the plant gets thirsty, which is
