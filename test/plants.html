@@ -1,0 +1,34 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Plant sheet</title>
+<style>
+  body { margin: 0; font: 12px system-ui; background: #efe9d6; color: #333; }
+  body.dusk { background: #1d2733; color: #ddd; }
+  .grid { display: grid; gap: 0; padding: 8px; }
+  .cell { text-align: center; }
+  .cell svg { width: 100%; display: block; }
+  h3 { margin: 4px 8px; }
+</style>
+<svg width="0" height="0" style="position:absolute"><defs id="defs"></defs></svg>
+<div id="out"></div>
+<script type="module">
+import { plantSVG, KINDS, WOBBLE_DEFS } from '../app/js/plants.js';
+document.getElementById('defs').innerHTML = WOBBLE_DEFS;
+const q = new URLSearchParams(location.search);
+const dusk = q.get('dusk') === '1';
+if (dusk) document.body.classList.add('dusk');
+const mode = q.get('mode') || 'stages';
+const kinds = q.get('kinds') ? q.get('kinds').split(',') : KINDS.map(k => k.id);
+let html = '';
+if (mode === 'stages') {
+  html += `<div class="grid" style="grid-template-columns:repeat(${kinds.length},1fr)">`;
+  for (let st = 0; st < 5; st++) for (const k of kinds) html += `<div class="cell">${plantSVG({ kind: k, stage: st, mood: 'fresh', seed: q.get('seed') || 'a', dusk, dew: st === 4 })}${k} ${st}</div>`;
+  html += '</div>';
+} else {
+  const st = +(q.get('stage') || 3);
+  html += `<div class="grid" style="grid-template-columns:repeat(${kinds.length},1fr)">`;
+  for (const m of ['fresh', 'thirsty', 'droopy']) for (const k of kinds) html += `<div class="cell">${plantSVG({ kind: k, stage: st, mood: m, seed: q.get('seed') || 'a', dusk })}${k} ${m}</div>`;
+  html += '</div>';
+}
+document.getElementById('out').innerHTML = html;
+</script>

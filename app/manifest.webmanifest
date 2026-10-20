@@ -1,0 +1,15 @@
+{
+  "name": "Friend Garden",
+  "short_name": "Friend Garden",
+  "description": "Keep in touch with the people you love: every friend is a plant, and a call is watering it.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e8ead2",
+  "theme_color": "#cfe2e6",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

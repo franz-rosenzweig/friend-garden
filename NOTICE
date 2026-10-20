@@ -1,0 +1,17 @@
+Friend Garden
+Copyright (c) 2026 franz-rosenzweig, MIT License (see LICENSE).
+
+The plants, icons and pictures in app/ were drawn for Friend Garden and are
+covered by the same MIT License.
+
+Friend Garden bundles these fonts, unchanged, in app/fonts/, each under the
+SIL Open Font License, Version 1.1 (the full text is next to each font):
+
+- Fraunces, Copyright 2018 The Fraunces Project Authors
+  (https://github.com/undercasetype/Fraunces), app/fonts/OFL-fraunces.txt
+- Nunito, Copyright 2014 The Nunito Project Authors
+  (https://github.com/googlefonts/nunito), app/fonts/OFL-nunito.txt
+- Caveat, Copyright 2014 The Caveat Project Authors
+  (https://github.com/googlefonts/caveat), app/fonts/OFL-caveat.txt
+
+The font files are the latin and latin-ext subsets served by Google Fonts.
